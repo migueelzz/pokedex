@@ -8,6 +8,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent  } from '@mui/material';
 
 import { useNavigate } from "react-router-dom";
+import PokedexCard from './components/PokedexCard';
 
 interface PokedexProps {
   
@@ -21,11 +22,6 @@ export const Pokedex: React.FC<PokedexProps> = () => {
   useEffect(() => {
     listPokemon().then((response) => setPokemons(response.results))
   }, []);
-
-  const navigate = useNavigate();
-  function handleClick(pokemon: PokemonListInterface) {
-    navigate(`/pokemon/${pokemon.name}`);
-  }
 
 
   return (
@@ -55,13 +51,7 @@ export const Pokedex: React.FC<PokedexProps> = () => {
           {pokemons.map((pokemon) => (
             <>
             <Grid item xs={6} lg={3}>
-              <Card variant="outlined" onClick={() => handleClick(pokemon)}>
-              <CardContent>
-                  <Typography variant="h5" component="div">
-                    {pokemon.name}
-                  </Typography>
-                </CardContent>
-              </Card>
+              <PokedexCard pokemon={pokemon}/>
             </Grid>
             </>
           ))}

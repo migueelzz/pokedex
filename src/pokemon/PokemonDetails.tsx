@@ -43,11 +43,68 @@ export const PokemonDetails: React.FC<PokemonDetailsProps> = () => {
       </AppBar>
     </Box>
 
-    <img src={selectedPokemonDetails?.sprites.front_default} alt="" />
+
+    <Container maxWidth="lg">
+      <Box mt={2}>
+          <img width='100%' height='auto' src={selectedPokemonDetails?.sprites.front_default} alt="" />
+      </Box>
+        <Box display='flex' flex-direction='row'>
+          <Typography variant='h2'>
+          {selectedPokemonDetails?.name}
+          </Typography>
+        </Box>
+
+        {/* <Box display='flex' flex-direction='row'>
+          <Typography>
+            Tipo:
+          </Typography>
+          <Typography>
+          {selectedPokemonDetails?.types.map((type) => <Typography>{type.type.name}</Typography>)}
+          </Typography>
+        </Box> */}
+
+        <Box display='flex' flex-direction='row'>
+          <Typography>
+            Espécie:
+          </Typography>
+          <Typography>
+          {selectedPokemonDetails?.species.name}
+          </Typography>
+        </Box>
+
+        <Box display='flex' flex-direction='row'>
+          <Typography>
+            Altura:
+          </Typography>
+          <Typography>
+          {selectedPokemonDetails?.height}
+          </Typography>
+        </Box>
+
+        <Box display='flex' flex-direction='row'>
+          <Typography>
+            Peso:
+          </Typography>
+          <Typography>
+          {selectedPokemonDetails?.weight}
+          </Typography>
+        </Box>
+
+        <Box display='flex' flex-direction='row'>
+          <Typography>
+          {selectedPokemonDetails?.abilities.map(ability => <Typography>{ability.ability.name}</Typography>)}
+          </Typography>
+        </Box>
+
+
+        
+    
+    </Container>
+
     
       
       {/* <h2>Pokemon Selecionado: {selectedPokemon?.name || "Nenhum Pokemon selecionado"}</h2> */}
-      {JSON.stringify(selectedPokemonDetails, undefined, 2)}
+      {/* {JSON.stringify(selectedPokemonDetails, undefined, 2)} */}
     </div>
   );
 };
