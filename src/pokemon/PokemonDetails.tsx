@@ -1,41 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { PokemonDetail } from './services/interfaces/PokemonDetails';
 
-import MenuIcon from '@mui/icons-material/Menu';
 import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent  } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { GetPokemonDetails } from './services/getPokemonDetails';
+import { useQuery } from 'react-query';
 
 interface PokemonDetailsProps {
-  
+
 }
 
 export const PokemonDetails: React.FC<PokemonDetailsProps> = () => {
-  const { name } = useParams();
-  const [selectedPokemonDetails, setSelectedPokemonDetails] = useState<PokemonDetail | undefined>(undefined);
+  const { name } = useParams() as {
+    name: string;
+  }
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if(!name) return;
-  
-    GetPokemonDetails(name)
-    .then((response) => setSelectedPokemonDetails(response))
-  
-  }, []);
+  const { data } = useQuery(`getPokemonDetails-${name}`, () => GetPokemonDetails(name));
+  const selectedPokemonDetails = data;
 
   return (
     <div>
       <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            sx={{ mr: 2 }}
-          >
-            <MenuIcon />
-          </IconButton>
+        <IconButton onClick={() => navigate(-1)}>
+          Favoritos
+        </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             {name}
           </Typography>
@@ -110,3 +101,7 @@ export const PokemonDetails: React.FC<PokemonDetailsProps> = () => {
 };
 
 export default PokemonDetails;
+
+function useHistory(): {} {
+  throw new Error('Function not implemented.');
+}

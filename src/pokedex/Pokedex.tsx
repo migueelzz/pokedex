@@ -5,28 +5,32 @@ import { PokemonDetail } from '../pokemon/services/interfaces/PokemonDetails';
 import { listPokemon, PokemonListInterface } from '../pokemon/services/listPokemons';
 
 import MenuIcon from '@mui/icons-material/Menu';
-import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent  } from '@mui/material';
+import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent, CircularProgress, LinearProgress  } from '@mui/material';
 
 import { useNavigate } from "react-router-dom";
 import PokedexCard from './components/PokedexCard';
+import { useQuery } from 'react-query';
+import { Favorite, More } from '@mui/icons-material';
 
 interface PokedexProps {
   
 }
 
 export const Pokedex: React.FC<PokedexProps> = () => {
-  const [pokemons, setPokemons] = useState<PokemonListInterface[]>([]);
-  const [selectedPokemon, setSelectedPokemon] = useState<PokemonListInterface | undefined>(undefined);
+  
+  const navigate = useNavigate();
 
+  const { data, isLoading, isRefetching, refetch, isStale } = useQuery(`listPokemon`, listPokemon);
 
-  useEffect(() => {
-    listPokemon().then((response) => setPokemons(response.results))
-  }, []);
+  // useEffect(() => {
+  //   listPokemon().then((response) => { 
+  //    setPokemons(response.results)
+  //    });
+  // }, []);
 
 
   return (
     <div>
-      <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -38,24 +42,44 @@ export const Pokedex: React.FC<PokedexProps> = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography variant="h6">
             Pokedex
           </Typography>
+
+        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: { xs: 'flex' } }}>
+            <IconButton
+              size="large"
+              aria-label="show more"
+              aria-haspopup="true"
+              onClick={() => navigate('/favorites')}
+              color="inherit"
+            >
+              <Favorite />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
-    </Box>
+        {isRefetching && <LinearProgress color='secondary' />}
 
     <Container maxWidth="lg">
       <Box mt={4}>
-        <Grid container spacing={2}>
-          {pokemons.map((pokemon) => (
-            <>
-            <Grid item xs={6} lg={3}>
-              <PokedexCard pokemon={pokemon}/>
-            </Grid>
-            </>
+        {isStale && (
+          <Button disabled={isRefetching} variant='outlined' onClick={() => refetch()}>Refetch</Button>
+        )}
+        {!isLoading ? (
+          <>
+          <Grid container spacing={2}>
+        {data?.results.map((pokemon) => (
+          <Grid item xs={6} lg={3}>
+            <PokedexCard pokemon={pokemon}/>
+          </Grid>
           ))}
         </Grid>
+        </>
+        ) : (
+          <div><CircularProgress /></div>
+        )}
 
       </Box>
     </Container>
