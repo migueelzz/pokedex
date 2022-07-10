@@ -28,7 +28,7 @@ export const Pokedex: React.FC<PokedexProps> = () => {
   return (
     <div>
       <Container sx={{ mt: 1 }}>
-      <AppBar position="static">
+      <AppBar position="static" color="primary">
         <Toolbar>
           <IconButton
             size="large"
@@ -65,7 +65,7 @@ export const Pokedex: React.FC<PokedexProps> = () => {
     <Container>
       <Box mt={4}>
         {isStale && (
-          <Button disabled={isRefetching} variant='outlined' onClick={() => refetch()}>Refetch</Button>
+          <Button sx={{ mb: 3}} disabled={isRefetching} variant='outlined' onClick={() => refetch()}>Atualizar</Button>
         )}
         {!isLoading ? (
           <>
