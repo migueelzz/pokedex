@@ -1,36 +1,33 @@
+import React, { useContext } from 'react';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
 import { GetPokemonDetails } from '../pokemon/services/getPokemonDetails';
 import { PokemonDetail } from '../pokemon/services/interfaces/PokemonDetails';
 import { listPokemon, PokemonListInterface } from '../pokemon/services/listPokemons';
 
 import MenuIcon from '@mui/icons-material/Menu';
-import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent, CircularProgress, LinearProgress  } from '@mui/material';
+import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent, CircularProgress, LinearProgress, Badge  } from '@mui/material';
 
 import { useNavigate } from "react-router-dom";
 import PokedexCard from './components/PokedexCard';
 import { useQuery } from 'react-query';
 import { Favorite, More } from '@mui/icons-material';
+import { FavoriteContext } from '../favorites/context/FavoriteContext';
 
 interface PokedexProps {
   
 }
 
 export const Pokedex: React.FC<PokedexProps> = () => {
+  const { favorites } = useContext(FavoriteContext);
   
   const navigate = useNavigate();
-
   const { data, isLoading, isRefetching, refetch, isStale } = useQuery(`listPokemon`, listPokemon);
 
-  // useEffect(() => {
-  //   listPokemon().then((response) => { 
-  //    setPokemons(response.results)
-  //    });
-  // }, []);
-
+  const favoritesCount = favorites.length;
 
   return (
     <div>
+      <Container sx={{ mt: 1 }}>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -38,7 +35,6 @@ export const Pokedex: React.FC<PokedexProps> = () => {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>
@@ -55,14 +51,18 @@ export const Pokedex: React.FC<PokedexProps> = () => {
               onClick={() => navigate('/favorites')}
               color="inherit"
             >
+          <Badge badgeContent={favoritesCount} color="error">
               <Favorite />
+          </Badge>
             </IconButton>
           </Box>
         </Toolbar>
       </AppBar>
+      </Container>
+      
         {isRefetching && <LinearProgress color='secondary' />}
 
-    <Container maxWidth="lg">
+    <Container>
       <Box mt={4}>
         {isStale && (
           <Button disabled={isRefetching} variant='outlined' onClick={() => refetch()}>Refetch</Button>

@@ -1,38 +1,64 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { PokemonDetail } from './services/interfaces/PokemonDetails';
 
-import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent  } from '@mui/material';
+import { Container, Box, Grid, AppBar, IconButton, Button, Toolbar, Typography, Card, CardActions, CardContent, Badge  } from '@mui/material';
 import { useNavigate, useParams } from 'react-router-dom';
 import { GetPokemonDetails } from './services/getPokemonDetails';
 import { useQuery } from 'react-query';
+import { Favorite } from '@mui/icons-material';
+import { FavoriteContext } from '../favorites/context/FavoriteContext';
 
 interface PokemonDetailsProps {
 
 }
 
 export const PokemonDetails: React.FC<PokemonDetailsProps> = () => {
+
+  const { favorites, setFavorites } = useContext(FavoriteContext)
+
   const { name } = useParams() as {
     name: string;
   }
   const navigate = useNavigate();
 
   const { data } = useQuery(`getPokemonDetails-${name}`, () => GetPokemonDetails(name));
+
   const selectedPokemonDetails = data;
+
+  const addPokemonToFavorite = () => {
+    if (!selectedPokemonDetails) return;
+    setFavorites([...favorites, selectedPokemonDetails]);
+  }
+
+  const removePokemonFromFavorites = () => {
+    if (!selectedPokemonDetails) return;
+    setFavorites(favorites.filter((poke) => poke.name !== selectedPokemonDetails.name));
+  }
+
+  const isFavorite = favorites.some((poke) => poke.name === selectedPokemonDetails?.name)
 
   return (
     <div>
+      <Container sx={{ mt: 1 }}>
       <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-        <IconButton onClick={() => navigate(-1)}>
+        <Button variant='outlined' onClick={() => navigate(-1)}>
           Favoritos
-        </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            {name}
+        </Button>
+          <Typography variant="h6">
+            {selectedPokemonDetails?.name}
           </Typography>
+        <Box sx={{ flexGrow: 1 }} />
+        <Box sx={{ display: { xs: 'flex' } }}>
+        <IconButton onClick={() => isFavorite ? removePokemonFromFavorites() : addPokemonToFavorite() } aria-label="add to favorites">
+              <Favorite color={isFavorite ? `error` : `disabled`} />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
     </Box>
+    </Container>
 
 
     <Container maxWidth="lg">
