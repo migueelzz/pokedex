@@ -1,3 +1,3 @@
 # Pokedex
 
-Pokedex with React and Firebase
+Pokédex made with React and Firebase
